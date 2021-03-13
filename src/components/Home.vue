@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import { getJWT } from "../config"
   export default {
     data() {
         return {
@@ -43,7 +44,8 @@
             const response = await fetch(this.requestUrl+'api', {
                 method: 'post',
                 headers: {
-                  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                  "Authorization": "Bearer "+ getJWT()
                 },
                 body: data
             });
@@ -51,13 +53,21 @@
             const result = await response.json()
             this.haveShort = true
 
-            if (result.checkCode == 100) {
+            if (response.status == 400 || response.status == 401) {
+                // login fail
+                this.getSuccess = false
+                this.userShort = result.short_name
+                this.saySomething = `You didn't login ! please login first !`
+                this.yourShortUrl = ''
+                this.$router.push('/Login');
+            } else if (result.checkCode == 100) {
                 // fail
                 this.getSuccess = false
                 this.userShort = result.short_name
                 this.saySomething = `Your desired short url had been occupied !\n Maybe use  ${result.short_name}  ?
                     Press button to create short url !`
                 this.yourShortUrl = ''
+
             } else {
                 // work !
                 this.getSuccess = true

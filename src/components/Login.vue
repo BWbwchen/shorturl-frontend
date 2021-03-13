@@ -13,22 +13,46 @@
   </div>
 </template>
 <script>
+  import { setJWT, getJWT } from "../config"
   export default {
     data () {
       return {
-        userName: '',
-        password: '',
+        userName: "",
+        password: "",
+        requestUrl: 'http://192.168.0.103:8000/'
       }
     },
     
     methods: {
-        login(){
-            //write login authencation logic here!
-            if( this.userName == 'abcd' && this.password == '1234' ){
-                localStorage.setItem('token', 'ImLogin')
-                this.$router.push('/');
-            } else{
-                alert('login failed')
+        async login(){
+            const data = {
+              "account": this.userName,
+              "password": this.password
+            } 
+            console.log(data)
+            const response = await fetch(this.requestUrl+'api/login', {
+                method: 'post',
+                headers: {
+                  "Content-type": "application/json; charset=UTF-8",
+                  //"Content-type": "raw; charset=UTF-8",
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json()
+            
+            if (response.status == 200) {
+              setJWT(result.token);
+              localStorage.setItem('token', getJWT())
+              this.$router.push('/Home');
+            } else if (response.status == 401) {
+              this.userName = '';
+              this.password = ''
+              alert('login failed')
+            } else if (response.status == 400) {
+              this.userName = '';
+              this.password = ''
+              alert('request error')
             }
         }
     }

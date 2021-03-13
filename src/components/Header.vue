@@ -6,10 +6,12 @@
   </div>
 </template>
 <script>
+  import { resetJWT } from "../config"
   export default {
     methods: {
         logout(){
-            localStorage.removeItem('token');
+            resetJWT()
+            localStorage.setItem('token', '')
             this.$router.push('/login');
         }
     }
