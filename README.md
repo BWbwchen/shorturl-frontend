@@ -1,6 +1,6 @@
 # login
 
-> A Vue.js project
+> Short url front end.
 
 ## Build Setup
 
