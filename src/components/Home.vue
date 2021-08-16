@@ -2,16 +2,12 @@
   <div class="container" id="new_short">
             <div class="row">
                 <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
-                    <h1 class="display-4 py-2" style="color: black;">Create your own short url !</h1>
+                    <h1 class="display-5 py-2" style="color: black;">Create your own short url !</h1>
                     <div class="px-2">
                         <form @submit.prevent="createUrl" class="justify-content-center">
                             <div class="form-group">
                                 <label class="sr-only">URL</label>
                                 <input type="text" class="form-control" v-model="originalUrl" placeholder="your url" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="sr-only">NAME</label>
-                                <input type="text" class="form-control" v-model="userShort" placeholder="your prefer short name (max length 7)">
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">Create short url now !</button>
                         </form>
@@ -23,14 +19,14 @@
 </template>
 
 <script>
-  import { getJWT } from "../config"
   export default {
     data() {
         return {
-            requestUrl: 'http://192.168.0.103:8000/',
+            requestUrl: 'http://bwbwchen.ddns.net:29345',
+            //requestUrl: 'http://192.168.0.201:30390',
+            //requestUrl: process.env.VUE_APP_MYURL,
             message: 'get short url !',
             originalUrl: '',
-            userShort: '',
             haveShort: false,
             yourShortUrl: '',
             saySomething: '',
@@ -40,41 +36,37 @@
     methods: {
         async createUrl () {
             // send request 
-            const data = `shortname=${this.userShort}&&url=${this.originalUrl}`
-            const response = await fetch(this.requestUrl+'api', {
-                method: 'post',
+            const data = {
+                "url": this.originalUrl,
+            }
+            console.log(this.requestUrl+'/add')
+            console.log(process.env.VUE_APP_LL)
+            const response = await fetch(this.requestUrl+'/add', {
+                method: 'POST',
+                mode: 'cors',
                 headers: {
-                  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                  "Authorization": "Bearer "+ getJWT()
+                  "Content-type": "application/json",
+                  //"Access-Control-Allow-Origin": "*",
                 },
-                body: data
+                body: JSON.stringify(data)
             });
+
 
             const result = await response.json()
             this.haveShort = true
 
-            if (response.status == 400 || response.status == 401) {
+            if (response.status != 200) {
                 // login fail
                 this.getSuccess = false
-                this.userShort = result.short_name
-                this.saySomething = `You didn't login ! please login first !`
+                this.saySomething = `Something went wrong !`
                 this.yourShortUrl = ''
-                this.$router.push('/Login');
-            } else if (result.checkCode == 100) {
-                // fail
-                this.getSuccess = false
-                this.userShort = result.short_name
-                this.saySomething = `Your desired short url had been occupied !\n Maybe use  ${result.short_name}  ?
-                    Press button to create short url !`
-                this.yourShortUrl = ''
-
+                this.$router.push('/');
             } else {
                 // work !
                 this.getSuccess = true
                 this.originalUrl = ''
-                this.userShort = ''
                 this.saySomething = "\n\n\n\nThis is your url :"
-                this.yourShortUrl = `${this.requestUrl}${result.short_name}`
+                this.yourShortUrl = `${this.requestUrl}/${result.short}`
             }
         }
     }

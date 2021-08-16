@@ -50,8 +50,8 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
-    host: '192.168.0.103',
-    port: 8080 // CHANGE YOUR PORT HERE!
+    host: '192.168.0.161',
+    port: 8080, // CHANGE YOUR PORT HERE!
   },
   performance: {
     hints: false
