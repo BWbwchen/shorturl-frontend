@@ -2,6 +2,9 @@
 
 > Short url front end.
 
+## Environment variable
+URL=<backend_url>
+
 ## Build Setup
 
 ``` bash

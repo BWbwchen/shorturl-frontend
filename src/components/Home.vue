@@ -22,9 +22,10 @@
   export default {
     data() {
         return {
-            requestUrl: 'http://bwbwchen.ddns.net:29345',
+            //requestUrl: 'http://bwbwchen.ddns.net:29345',
             //requestUrl: 'http://192.168.0.201:30390',
-            //requestUrl: process.env.VUE_APP_MYURL,
+            requestUrl: process.env.URL,
+            //requestUrl: process.env.URL,
             message: 'get short url !',
             originalUrl: '',
             haveShort: false,
@@ -40,7 +41,6 @@
                 "url": this.originalUrl,
             }
             console.log(this.requestUrl+'/add')
-            console.log(process.env.VUE_APP_LL)
             const response = await fetch(this.requestUrl+'/add', {
                 method: 'POST',
                 mode: 'cors',

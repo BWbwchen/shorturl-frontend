@@ -6,6 +6,8 @@ RUN npm install
 
 COPY . .
 
+ENV URL=http://bwbwchen.ddns.net:29345
+
 RUN npm run build
 
 FROM nginx:alpine AS deploy  
